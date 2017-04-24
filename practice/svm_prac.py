@@ -14,7 +14,7 @@ features_train, labels_train, features_test, labels_test = makeTerrainData()
 ########################## SVM #################################
 ### we handle the import statement and SVC creation for you here
 from sklearn.svm import SVC
-clf = SVC(kernel="linear")
+clf = SVC(kernel="rbf", gamma = 20.0)
 
 
 #### now your job is to fit the classifier
@@ -34,4 +34,8 @@ acc = accuracy_score(pred, labels_test)
 def submitAccuracy():
     return acc
 
-print submitAccuracy()
+print "Accuracy is '{}'".format(submitAccuracy())
+
+prettyPicture(clf, features_test, labels_test)
+plt.show()
+plt.savefig("/data/high_gamma.png")
