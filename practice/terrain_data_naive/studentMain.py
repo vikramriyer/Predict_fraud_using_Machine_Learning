@@ -33,5 +33,12 @@ bumpy_slow = [features_train[ii][1] for ii in range(0, len(features_train)) if l
 clf = classify(features_train, labels_train)
 
 ### draw the decision boundary with the text points overlaid
-prettyPicture(clf, features_test, labels_test)
-output_image("test.png", "png", open("test.png", "rb").read())
+#prettyPicture(clf, features_test, labels_test)
+#output_image("test.png", "png", open("test.png", "rb").read())
+
+pred = clf.predict(features_test)
+
+from classify import NBAccuracy
+# below are the two ways accuracy can be found
+print "Accuracy is: {}".format(NBAccuracy(clf, pred, labels_test))
+print "Accuracy is: {}".format(clf.score(features_test, labels_test))
