@@ -88,15 +88,39 @@ def create_plots_for_outliers(feature_1, feature_2):
 	plt.show()
 
 # By observing the above plots, it makes sense to check the following features for outliers
-create_plots_for_outliers('total_payments', 'total_stock_value')
-create_plots_for_outliers('from_poi_to_this_person', 'from_this_person_to_poi')
-create_plots_for_outliers('bonus', 'salary')
-
-# We can clearly see that 'TOTAL' is a spreadsheet quirk and should be removed
-data_dict.pop('TOTAL', 0)
+#create_plots_for_outliers('total_payments', 'total_stock_value')
+#create_plots_for_outliers('from_poi_to_this_person', 'from_this_person_to_poi')
+#create_plots_for_outliers('bonus', 'salary')
 
 # Let's also identify the other outliers by looking at the plots, we will clean them later
+#total_payments vs total_stock_value
+#total_payments > 1
+total_payments_list = df['total_payments'].tolist()
+total_payments_list.sort(reverse=True)
+max_val = max(total_payments_list)
+print total_payments_list[0:5]
+print max_val
+print df[df.total_payments >= 103559793.0].name
+# Here, we can say that Lay Kenneth is a valid data point. However, we can clearly 
+# see that 'TOTAL' is a spreadsheet quirk and should be removed
 
+#from_poi_to_this_person vs from_this_person_to_poi
+#from_poi_to_this_person > 300 as well as from_this_person_to_poi > 200
+print df[df.from_poi_to_this_person > 300].name
+print df[df.from_this_person_to_poi > 200].name
+#The above results suggest that there is nothing wrong with the data here. These sdata points will
+#be analyzed further if anything suspicious is found
+
+#bonus vs salary
+#bonus > 0.2
+print df[df.bonus == max(df['bonus'].tolist())].name
+#The above result too results on 'TOTAL' which we will remove
+
+#Apart from the above outliers, there are some more which need attention either because they lack
+#sensible data that can be used for analysis or they are wrong
+print df[df.name == 'THE TRAVEL AGENCY IN THE PARK']
+print df[df.name == 'LOCKHART EUGENE E']
+#The above data points are not much useful because most of the fields are 'NaN', so we will drop them
 
 #removing outliers
 def remove_outlier(keys):
@@ -104,9 +128,10 @@ def remove_outlier(keys):
 	non_outlier_data_dict = data_dict
 	for key in keys:
 		non_outlier_data_dict.pop(key, 0)
+	return non_outlier_data_dict
 
 outliers = ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E']
-remove_outlier(outliers)
+non_outlier_data_dict = remove_outlier(outliers)
 
 exit(0)
 ### Task 3: Create new feature(s)
