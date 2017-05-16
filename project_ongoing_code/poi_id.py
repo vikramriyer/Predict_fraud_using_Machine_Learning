@@ -152,36 +152,73 @@ print sorted(nan_features.items(), key=operator.itemgetter(1), reverse=True)
 deferral_payments, deferred_income, long_term_incentive are the features which have more than 50% of
 values to be 'NaN'
 '''
+
 ### Task 3: Create new feature(s)
 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
 
+# Let's find the fraction of emails from a person and to a person, and add this as a feature
+def find_fraction(user_messages, total_messages):
+	if user_messages != 'NaN' and total_messages != 'NaN':
+		fraction = user_messages/float(total_messages)
+	else:
+		fraction = 0
+	return fraction
+
+def add_all_money(*all_financial_features):
+	total_money = 0
+	for feature in all_financial_features:
+		if feature != 'NaN':
+			total_money += feature
+	return total_money
+
+financial_features = ['salary', 'total_stock_value', 
+					  'exercised_stock_options', 'bonus']
+
+for name, data in my_dataset.iteritems():
+	data['fraction_of_messages_from_pois'] = find_fraction(data['from_poi_to_this_person'],
+												data['to_messages'])
+	data['fraction_of_messages_to_pois'] = find_fraction(data['from_this_person_to_poi'],
+												data['from_messages'])
+	data['total_assets'] = add_all_money(data['salary'],
+										 data['total_stock_value'],
+										 data['exercised_stock_options'],
+										 data['bonus'])
+
+# We can add one more measure of a person, i.e. the wealth which is the sum of all the financial\
+# features present in the dataset. I personally found it very interesting to know how much money
+# on the whole people made in the year 2001-02
+name_assets_map = {}
+for k, v in my_dataset.iteritems():
+	name_assets_map[k] = [v['total_assets'], v['poi']]
+
+top_5_guns = sorted(name_assets_map.items(), key=operator.itemgetter(1), reverse=True)[:10]
+print "The top 5 money makers: {}".format(top_5_guns)
+
+# let's add the newly created features to the features list
+features_list.extend(('total_assets', 'fraction_of_messages_to_pois', 'fraction_of_messages_from_pois'))
+
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
-labels, features = targetFeatureSplit(data)
 
-'''
 # scatter plot
 for point in data:
-	salary = point[0]
-	bonus = point[1]
-	plt.scatter(salary, bonus)
+	from_poi = point[1]
+	to_poi = point[2]
+	plt.scatter( from_poi, to_poi )
+	if point[0] == 1:
+		plt.scatter(from_poi, to_poi, color="r", marker="*")
+plt.xlabel("fraction of emails this person gets from poi")
+#plt.show()
 
-plt.xlabel("salary")
-plt.ylabel("bonus")
-plt.show()
-'''
+labels, features = targetFeatureSplit(data)
 
-from sklearn import linear_model
-reg = linear_model.LinearRegression()
-reg.fit()
+from sklearn.cross_validation import train_test_split
+features_train, features_test, labels_train, labels_test = \
+	train_test_split(features, labels, test_size=0.1, random_state=42)
 
-exit(0)
 ### Task 4: Try a variety of classifiers
-'''
-
-'''
 
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
@@ -189,9 +226,38 @@ exit(0)
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
+print "CLASSIFIERS"
 from sklearn.naive_bayes import GaussianNB
 clf = GaussianNB()
+clf.fit(features_train, labels_train)
+pred = clf.predict(features_test)
 
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+print accuracy_score(labels_test, pred)
+print precision_score(labels_test, pred)
+#OR
+#print clf.score(features_test, labels_test)
+print '-x-x-x-Naive Bayes-x-x-x-'
+
+from sklearn.tree import DecisionTreeClassifier
+clf = DecisionTreeClassifier(min_samples_split=5)
+clf.fit(features_train, labels_train)
+pred = clf.predict(features_test)
+
+print accuracy_score(labels_test, pred)
+print precision_score(labels_test, pred)
+print '-x-x-x-Decision Trees-x-x-x-'
+
+from sklearn.svm import SVC
+clf = SVC(kernel = 'rbf', C = 10000)
+clf.fit(features_train, labels_train)
+pred = clf.predict(features_test)
+
+print accuracy_score(labels_test, pred)
+print precision_score(labels_test, pred)
+print '-x-x-x-SVM-x-x-x-'
+exit(0)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
@@ -200,9 +266,6 @@ clf = GaussianNB()
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 # Example starting point. Try investigating other evaluation techniques!
-from sklearn.cross_validation import train_test_split
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.3, random_state=42)
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
