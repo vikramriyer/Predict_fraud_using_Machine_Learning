@@ -3,9 +3,10 @@
 import sys
 import pickle
 import math
-sys.path.append("../tools/")
 import pandas as pd
 import numpy as np
+import operator
+sys.path.append("../tools/")
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
@@ -50,7 +51,7 @@ print group_poi['bonus',
     'to_messages'].agg([np.max])
 print df.describe().transpose()
 '''
-df.fillna(0, inplace=True)
+#df.fillna(0, inplace=True)
 #print df
 print "Total POI's: {}".format(len(df[df['poi'] == 1]))
 print "Total Non POI's: {}".format(len(df[df['poi'] == 0]))
@@ -58,10 +59,9 @@ print "Total Non POI's: {}".format(len(df[df['poi'] == 0]))
 # Here, we can say that, we have non poi's almost 7 times the number of poi's which implicitly means
 # that, we have less training data to learn from i.e. less number of dependent variables to learn from
 
-# 
-#print df.describe().transpose()
-#print df.head(5)
-#print df.columns[df.columns == 'poi']
+print df.describe().transpose()
+print df.head(5)
+print df.columns[df.columns == 'poi']
 # By looking at the count section, we can say that, some columns/features do not have useful info or
 # have NaN, these include; loan_advances, restricted_stock_deferred, director_fees, deferral_payments, deferred_income
 
@@ -133,7 +133,25 @@ def remove_outlier(keys):
 outliers = ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E']
 non_outlier_data_dict = remove_outlier(outliers)
 
-exit(0)
+'''
+NAN programatically
+# Since we saw a lot of features for records having 'NaN' which we converted to '0', 
+# it is worth finding out the number of 'NaN' for each record
+all_features = df.columns.tolist()
+nan_features = {}
+for feature in all_features:
+	nan_features[feature] = 0
+	for k,v in data_dict.iteritems():
+		if feature == 'name':
+			continue
+		if v[feature] == 'NaN':
+			nan_features[feature] += 1
+
+print sorted(nan_features.items(), key=operator.itemgetter(1), reverse=True)
+# With the above result we can see that, loan_advances, director_fees, restricted_stock_deferred,
+deferral_payments, deferred_income, long_term_incentive are the features which have more than 50% of
+values to be 'NaN'
+'''
 ### Task 3: Create new feature(s)
 
 ### Store to my_dataset for easy export below.
@@ -160,7 +178,6 @@ reg = linear_model.LinearRegression()
 reg.fit()
 
 exit(0)
-
 ### Task 4: Try a variety of classifiers
 '''
 
