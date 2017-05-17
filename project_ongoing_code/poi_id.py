@@ -193,8 +193,8 @@ name_assets_map = {}
 for k, v in my_dataset.iteritems():
 	name_assets_map[k] = [v['total_assets'], v['poi']]
 
-top_5_guns = sorted(name_assets_map.items(), key=operator.itemgetter(1), reverse=True)[:10]
-print "The top 5 money makers: {}".format(top_5_guns)
+top_10_guns = sorted(name_assets_map.items(), key=operator.itemgetter(1), reverse=True)[:10]
+print "The top 10 money makers: {}".format(top_10_guns)
 
 # let's add the newly created features to the features list
 features_list.extend(('total_assets', 'fraction_of_messages_to_pois', 'fraction_of_messages_from_pois'))
@@ -213,6 +213,21 @@ plt.xlabel("fraction of emails this person gets from poi")
 #plt.show()
 
 labels, features = targetFeatureSplit(data)
+
+# Now that we have added 3 more features to existing, let's find the 10 best features that can be used
+from sklearn.feature_selection import SelectKBest
+k_best = SelectKBest(k=10)
+k_best.fit(features, labels)
+
+results_list = zip(k_best.get_support(), features_list[1:], k_best.scores_)
+results_list = sorted(results_list, key=lambda x: x[2], reverse=True)
+k_best_features = [i[1] for i in results_list]
+print k_best_features
+
+# poi is always expected feature at the 0th position, hence let's add it
+k_best_features.insert(0, 'poi')
+
+data = featureFormat(my_dataset, k_best_features, sort_keys = True)
 
 from sklearn.cross_validation import train_test_split
 features_train, features_test, labels_train, labels_test = \
@@ -258,6 +273,7 @@ print accuracy_score(labels_test, pred)
 print precision_score(labels_test, pred)
 print '-x-x-x-SVM-x-x-x-'
 exit(0)
+
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
