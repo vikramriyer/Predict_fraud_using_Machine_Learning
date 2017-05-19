@@ -272,8 +272,8 @@ pred = clf.predict(features_test)
 print accuracy_score(labels_test, pred)
 print precision_score(labels_test, pred)
 print '-x-x-x-SVM-x-x-x-'
-exit(0)
 
+exit(0)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
