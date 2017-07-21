@@ -26,6 +26,7 @@ print accuracy_score(pred, labels_test)
 pca = PCA(n_components=2)
 pca.fit(features_train)
 pca.transform(features_train)
+pca.transform(features_test)
 
 clf1 = svm.SVC()
 clf1.fit(features_train, labels_train)
