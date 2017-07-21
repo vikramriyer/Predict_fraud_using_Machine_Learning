@@ -15,6 +15,9 @@ There are almost 5,00,000 emails that have been shared across the organization. 
 - NaN: The dataset had some outliers that had to be cleant so as to make the analysis easier and the algorithms robust. Some of the features were high in NaN values, which made no sense and was pure noise. Thus these were removed. The threashold I set was if more than 50% are NaN, discard the feature. On the same lines, some data points had all of the values set to NaN; these were removed too.
 - TOTAL: This must have been a spreadsheet calculation. The value is the sum of all the total_payments, hence a lot larger and had to be removed. We can calculate the values anytime we want with inbuilt functions. This one was removed as well.
 
+### Files
+Please check the project directory which has the poi_id.py file which houses the code and <star>.pkl files in which the output has been dumped.
+
 ## Feature Engineering
 
 ### I engineered 3 features totally.
