@@ -54,6 +54,7 @@ fp = false positive
 fn = false negative
 
 ## References
+https://docs.google.com/document/d/12-vI18qm2R79xpjmwloy-lKe5GdHV_KQVpaweieOnXY/edit?usp=sharing
 http://scikit-learn.org/stable/modules/pipeline.html
 http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
 http://chrisstrelioff.ws/sandbox/2015/06/25/decision_trees_in_python_again_cross_validation.html
