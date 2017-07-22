@@ -29,8 +29,10 @@ from sklearn.neighbors import KNeighborsClassifier
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
 
+import warnings
+warnings.filterwarnings("ignore")
 
 ############################ <Task 1: Select what features you'll use.> ############################
 '''
@@ -62,9 +64,9 @@ df.rename(columns={'index':'name'}, inplace=True)
 print "Total number of Data points: '{}' and Features: '{}'".format(df.shape[0], df.shape[1])
 print df.describe().transpose()
 print df.head()
+print df.shape
 print "Total POI's: {}".format(len(df[df['poi'] == 1]))
 print "Total Non POI's: {}".format(len(df[df['poi'] == 0]))
-
 '''
 Inferences after exploring data
  - less number of data points to train -> 146
@@ -266,11 +268,19 @@ def print_scores(classifier, tuned=False):
         print "Recall: {}".format(recall_score(labels_test, pred))
 
 print "Before Tuning..."
+print 
 knn = KNeighborsClassifier()
 dt = DecisionTreeClassifier()
+svm = SVC()
+print "KNN"
 print_scores(knn)
+print
+print "Decision Trees"
 print_scores(dt)
-
+print
+print "Support Vector Machines"
+print_scores(svm)
+print 
 ############################ <Task 5: Tune your classifier to achieve better than .3 precision and recall> ############################
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
@@ -288,8 +298,22 @@ Though this is compute heavy, with this small a dataset, it should not take a lo
 of time
 Setting the second parameter to True will use kfold cross validation
 '''
+
 print "After Tuning..."
+svm = SVC(kernel='rbf', gamma='auto', C=1.0)
+knn = KNeighborsClassifier(n_neighbors=7, n_jobs=3)
 dt = DecisionTreeClassifier(max_depth=11, random_state=51)
+print
+
+print "Support Vector Machines"
+print_scores(svm, True)
+print 
+
+print "KNN"
+print_scores(knn, True)
+print 
+
+print "Decision Trees"
 print_scores(dt, True)
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
@@ -300,4 +324,3 @@ print_scores(dt, True)
 clf = dt
 
 dump_classifier_and_data(clf, my_dataset, features_list)
-
