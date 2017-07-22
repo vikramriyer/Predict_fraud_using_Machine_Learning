@@ -26,6 +26,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import chi2
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.pipeline import Pipeline
@@ -54,11 +55,8 @@ features_list = ['poi', 'salary', 'to_messages', 'deferral_payments',
 with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
-# load the dictionary into a dataframe and change the index from name of the person
-# to int indexes, we may need the name as a separate field
+# load the dictionary into a dataframe
 df = pd.DataFrame.from_dict(data_dict, orient='index', dtype=np.float)
-df.reset_index(level=0, inplace=True)
-df.rename(columns={'index':'name'}, inplace=True)
 
 # exploring data: our data is now ready to be explored
 print "Total number of Data points: '{}' and Features: '{}'".format(df.shape[0], df.shape[1])
@@ -67,6 +65,12 @@ print df.head()
 print df.shape
 print "Total POI's: {}".format(len(df[df['poi'] == 1]))
 print "Total Non POI's: {}".format(len(df[df['poi'] == 0]))
+
+# change the index from name of the person
+# to int indexes, we may need the name as a separate field
+df.reset_index(level=0, inplace=True)
+df.rename(columns={'index':'name'}, inplace=True)
+
 '''
 Inferences after exploring data
  - less number of data points to train -> 146
@@ -238,10 +242,28 @@ plt.ylabel("fraction of emails this person sends to poi")
 
 labels, features = targetFeatureSplit(data)
 
-'''
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.1, random_state=42)
-'''
+# Let's select the k-best features, where k = 10
+def select_k_best_features(k=10):
+	'''
+	Returns a list of the top 10 features
+	k is defaulted to 10
+	'''
+	k_best = SelectKBest(k=10)
+	k_best.fit(features, labels)
+	scores = k_best.scores_
+	unsorted_pairs = zip(features_list[1:], scores)
+	sorted_pairs = list(reversed(sorted(unsorted_pairs, key=lambda x: x[1])))
+	k_best_features = dict(sorted_pairs[:10])
+	final_features = k_best_features.keys()
+	print "------->>> {}".format(final_features)
+	
+	# poi is always expected feature at the 0th position, hence let's add it
+	final_features.insert(0, 'poi')
+	return final_features
+
+
+data = featureFormat(my_dataset, select_k_best_features(10), sort_keys = True)
+labels, features = targetFeatureSplit(data)
 
 ############################ <Task 4: Try a variety of classifiers> ############################
 ### Please name your classifier clf for easy export below.
