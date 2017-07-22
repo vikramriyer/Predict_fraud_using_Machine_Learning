@@ -19,10 +19,10 @@ So we can say that to train the algorithms, we have very few examples to learn f
 There are almost 5,00,000 emails that have been shared across the organization. There must be a lot of things that we have to check to make sure that a person is 'poi'. Right from finding out each and every feature to the relations between each of them to drawing insights about who might be a poi, everything can be done in a easy and better way if machine learning algorithms are used. Mining the dataset manually would consume a lot of time and effort.
 
 ### Outliers
-- NaN: The dataset had some outliers that had to be cleant so as to make the analysis easier and the algorithms robust. Some of the features were high in NaN values, which made no sense and was pure noise. Thus these were removed. The threashold I set was if more than 50% are NaN, discard the feature. On the same lines, some data points had all of the values set to NaN; these were removed too. The features that were removed in the above procedure are **loan_advances, director_fees, restricted_stock_deferred, deferral_payments, deferred_income, long_term_incentive**
-- TOTAL: This must have been a spreadsheet calculation. The value is the sum of all the total_payments, hence a lot larger and had to be removed. We can calculate the values anytime we want with inbuilt functions. This one was removed as well.
-- THE TRAVEL AGENCY IN THE PARK: Since this is not a person, this data point was scrapped as well. I caught hold of this data point when I was checking with the keys in the data_dict which had the names of all the employees. In the poi_names.txt there were some names and I was trying to figure out of comparing that to the data_dict.keys() would give me any good results. Though comparing them was not of much use, printing the keys allowed me to see this key which was not a name of any person.
-- LOCKHART EUGENE E: This person had NaN in almost all of the fields and hence not very useful, hence had to be removed from the dataset.
+- __NaN__: The dataset had some outliers that had to be cleant so as to make the analysis easier and the algorithms robust. Some of the features were high in NaN values, which made no sense and was pure noise. Thus these were removed. The threashold I set was if more than 50% are NaN, discard the feature. On the same lines, some data points had all of the values set to NaN; these were removed too. The features that were removed in the above procedure are **loan_advances, director_fees, restricted_stock_deferred, deferral_payments, deferred_income, long_term_incentive**
+- __TOTAL__: This must have been a spreadsheet calculation. The value is the sum of all the total_payments, hence a lot larger and had to be removed. We can calculate the values anytime we want with inbuilt functions. This one was removed as well.
+- __THE TRAVEL AGENCY IN THE PARK__: Since this is not a person, this data point was scrapped as well. I caught hold of this data point when I was checking with the keys in the data_dict which had the names of all the employees. In the poi_names.txt there were some names and I was trying to figure out of comparing that to the data_dict.keys() would give me any good results. Though comparing them was not of much use, printing the keys allowed me to see this key which was not a name of any person.
+- __LOCKHART EUGENE E__: This person had NaN in almost all of the fields and hence not very useful, hence had to be removed from the dataset.
 
 ### Files
 Please check the project directory which has the poi_id.py file which houses the code and **<star>.pkl** files in which the output has been dumped.
@@ -68,7 +68,7 @@ It works more like a depth first search that is used in graphs for traversal thr
 2. __random_state__ = 51, 
 This parameter keeps the output of the classifier constant. In case we do not mention this parameter, by default it is a np.random(any_number) and thus the splits may start from any point in the dataset. I had used GridSearchCV to create multiple iterations to find out that 51 suits me best.
 
-**The benchmarks: (when the newly engineered features are used)
+**The benchmarks: (when the newly engineered features are used)**
 ```
 Accuracy: 0.832234432234
 Precision: 0.308333333333
