@@ -20,6 +20,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.cross_validation import KFold, cross_val_score
 from sklearn import preprocessing
+from sklearn.decomposition import PCA, NMF
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -243,45 +244,41 @@ plt.ylabel("fraction of emails this person sends to poi")
 labels, features = targetFeatureSplit(data)
 
 # Let's select the k-best features, where k = 10
-def select_k_best_features(k=10):
-	'''
-	Returns a list of the top 10 features
-	k is defaulted to 10
-	'''
-	k_best = SelectKBest(k=10)
-	k_best.fit(features, labels)
-	scores = k_best.scores_
-	unsorted_pairs = zip(features_list[1:], scores)
-	sorted_pairs = list(reversed(sorted(unsorted_pairs, key=lambda x: x[1])))
-	k_best_features = dict(sorted_pairs[:10])
-	final_features = k_best_features.keys()
-	print "------->>> {}".format(final_features)
-	
-	# poi is always expected feature at the 0th position, hence let's add it
-	final_features.insert(0, 'poi')
-	return final_features
+def select_k_best_features():
+    '''
+    Returns a list of the top 10 features
+    k is defaulted to 10
+    '''
+    for k_val in range(1, len(features_list)):
+        k_best = SelectKBest(k=k_val)
+        k_best.fit(features, labels)
+        scores = k_best.scores_
+        unsorted_pairs = zip(features_list[1:], scores)
+        sorted_pairs = list(reversed(sorted(unsorted_pairs, key=lambda x: x[1])))
+        k_best_features = dict(sorted_pairs[:k_val])
+        final_features = k_best_features.keys()
+    
+        # poi is always expected feature at the 0th position, hence let's add it
+        final_features.insert(0, 'poi')
+        print "------->>> {}".format(final_features)
 
+        feature_dict[k_val] = final_features
 
-data = featureFormat(my_dataset, select_k_best_features(10), sort_keys = True)
-labels, features = targetFeatureSplit(data)
+feature_dict = {}
+select_k_best_features()
 
-############################ <Task 4: Try a variety of classifiers> ############################
-### Please name your classifier clf for easy export below.
-### Note that if you want to do PCA or other multi-stage operations,
-### you'll need to use Pipelines. For more info:
-### http://scikit-learn.org/stable/modules/pipeline.html
-
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.1, random_state=42)
-
-def print_scores(classifier, tuned=False):
+def print_and_return_scores(classifier, tuned=False):
     '''
     Prints the accuracy, precision and recall scores so as to make optimal choices
     '''
     if tuned:
-        print "Accuracy: {}".format(cross_val_score(classifier, features, labels, cv=10, scoring='accuracy').mean())
-        print "Precision: {}".format(cross_val_score(classifier, features, labels, cv=10, scoring='precision').mean())
-        print "Recall: {}".format(cross_val_score(classifier, features, labels, cv=10, scoring='recall').mean())
+        accuracy = cross_val_score(classifier, features, labels, cv=10, scoring='accuracy').mean()
+        precision = cross_val_score(classifier, features, labels, cv=10, scoring='precision').mean()
+        recall = cross_val_score(classifier, features, labels, cv=10, scoring='recall').mean()
+        print "Accuracy: {}".format(accuracy)
+        print "Precision: {}".format(precision)
+        print "Recall: {}".format(recall)
+        return accuracy, precision, recall
     else:
         classifier.fit(features_train, labels_train)
         pred = classifier.predict(features_test)
@@ -289,60 +286,97 @@ def print_scores(classifier, tuned=False):
         print "Precision: {}".format(precision_score(labels_test, pred))
         print "Recall: {}".format(recall_score(labels_test, pred))
 
-print "Before Tuning..."
-print 
-knn = KNeighborsClassifier()
-dt = DecisionTreeClassifier()
-svm = SVC()
-print "KNN"
-print_scores(knn)
-print
-print "Decision Trees"
-print_scores(dt)
-print
-print "Support Vector Machines"
-print_scores(svm)
-print 
-############################ <Task 5: Tune your classifier to achieve better than .3 precision and recall> ############################
-### using our testing script. Check the tester.py script in the final project
-### folder for details on the evaluation method, especially the test_classifier
-### function. Because of the small size of the dataset, the script uses
-### stratified shuffle split cross validation. For more info: 
-### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
+max_scores = {'precision': 0.0, 'recall': 0.0, 'accuracy': 0.0}
+def get_max(score_tuple):
+    if score_tuple[1] > max_scores['precision'] and score_tuple[2] > max_scores['recall'] \
+        and score_tuple[0] > max_scores['accuracy']:
+        max_scores['precision'] = score_tuple[1]
+        max_scores['recall'] = score_tuple[2]
+        max_scores['accuracy'] = score_tuple[0]
+        return True
 
-# Example starting point. Try investigating other evaluation techniques!
+total_k_features = 0
+for i in range(1,len(feature_dict)):
+    print "***************************************Features: {}**********************************************".format(i)
+    data = featureFormat(my_dataset, feature_dict[i], sort_keys = True)
+    #data = featureFormat(my_dataset, features_list, sort_keys = True)
+    labels, features = targetFeatureSplit(data)
 
-'''
-Since this is a small dataset, it will far better to use K-fold cross-validation
-rather than train-test-split as we will have (k-1) types of train test split work
-for us instead of a single one.
-Though this is compute heavy, with this small a dataset, it should not take a lot
-of time
-Setting the second parameter to True will use kfold cross validation
-'''
+    ############################ <Task 4: Try a variety of classifiers> ############################
+    ### Please name your classifier clf for easy export below.
+    ### Note that if you want to do PCA or other multi-stage operations,
+    ### you'll need to use Pipelines. For more info:
+    ### http://scikit-learn.org/stable/modules/pipeline.html
 
-print "After Tuning..."
-svm = SVC(kernel='rbf', gamma='auto', C=1.0)
-knn = KNeighborsClassifier(n_neighbors=7, n_jobs=3)
-dt = DecisionTreeClassifier(max_depth=11, random_state=51)
-print
+    features_train, features_test, labels_train, labels_test = \
+        train_test_split(features, labels, test_size=0.1, random_state=42)
 
-print "Support Vector Machines"
-print_scores(svm, True)
-print 
+    print "Before Tuning..."
+    print 
+    knn = KNeighborsClassifier()
+    dt = DecisionTreeClassifier()
+    svm = SVC()
+    print "KNN"
+    print_and_return_scores(knn)
+    print
+    print "Decision Trees"
+    print_and_return_scores(dt)
+    print
+    print "Support Vector Machines"
+    print_and_return_scores(svm)
+    print 
 
-print "KNN"
-print_scores(knn, True)
-print 
+    ############################ <Task 5: Tune your classifier to achieve better than .3 precision and recall> ############################
+    ### using our testing script. Check the tester.py script in the final project
+    ### folder for details on the evaluation method, especially the test_classifier
+    ### function. Because of the small size of the dataset, the script uses
+    ### stratified shuffle split cross validation. For more info: 
+    ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
-print "Decision Trees"
-print_scores(dt, True)
+    # Example starting point. Try investigating other evaluation techniques!
+
+    '''
+    Since this is a small dataset, it will far better to use K-fold cross-validation
+    rather than train-test-split as we will have (k-1) types of train test split work
+    for us instead of a single one.
+    Though this is compute heavy, with this small a dataset, it should not take a lot
+    of time
+    Setting the second parameter to True will use kfold cross validation
+    '''
+
+    print "After Tuning..."
+    svm = SVC(kernel='rbf', gamma='auto', C=1.0)
+    knn = KNeighborsClassifier(n_neighbors=7, n_jobs=3)
+    dt = DecisionTreeClassifier(max_depth=11, random_state=51)
+    print
+
+    print "Support Vector Machines"
+    if get_max(print_and_return_scores(svm, True)):
+        clf = svm
+        total_k_features = i
+    print 
+
+    print "KNN"
+    if get_max(print_and_return_scores(knn, True)):
+        clf = knn
+        total_k_features = i
+    print 
+
+    print "Decision Trees"
+    if get_max(print_and_return_scores(dt, True)):
+        clf = dt
+        total_k_features = i
+    print "*******************************************************************************************************"
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
 ### generates the necessary .pkl files for validating your results.
 
-clf = dt
-
+print clf
+print
+print max_scores
+print "k: {}".format(total_k_features)
+print "The features: {}".format(feature_dict[total_k_features])
+print "The features: {}".format(feature_dict[total_k_features+1])
 dump_classifier_and_data(clf, my_dataset, features_list)
