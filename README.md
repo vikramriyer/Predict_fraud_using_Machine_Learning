@@ -89,6 +89,8 @@ Hence, we we need to be pretty careful in validating if our algorithms are corre
 In simple terms, let's consider an example of a bike. <br>
 For ex: If I want to ride my bike on a steep slove, I would want my bike to have good speed as well as acceleration, I would not care much about it's fuel efficiency. However on the contrary, if I want to go on a long ride, speed would not matter as much as fuel efficiency would. For these to happen, we tune some parts of the bike like the ignition system, rpm, etc. In the same way, when we want our machine learning algorithms to perform well under certain conditions, we tune some parameters which allow us to get better results. <br>
 
+**Note:**  It is also possible that we overtune an algorithm which may take the model to run for ever thus increasing the time complexity. At the end of the day, our aim to find out how much accuracy we desire depending on the problem we are solving. 
+
 **Tuning of the parameters**
 After tuning the parameters, the recall and precision crossed the 30% threshold mark. This can be done better and will do it in the next iterations as I dig more into tuning of the algorithm and evaluation.
 
