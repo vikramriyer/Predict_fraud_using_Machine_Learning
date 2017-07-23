@@ -38,16 +38,23 @@ Since this dataset is an example of supervised learning, we know the label 'poi'
 This feature was more of intuitive and interesting one. It is important to know who made the most money considering all the financial features present in the dataset. Added up 'salary', 'total_stock_value', 'exercised_stock_options' and 'bonus'
 
 ### Feature selection
-The best features selected (k=10) are as below:
-'salary', 'total_payments', 'total_assets', 'bonus', 'fraction_of_messages_to_pois', 'total_stock_value', 'shared_receipt_with_poi', 'exercised_stock_options', 'expenses', 'restricted_stock'
+**How did I select the value k=9**
+I had the precision, recall and accuracy tested for all values ranging between 1 to 16 (final number of features). We had a total of 21 features out of which we removed 6 features in the outlier section. Hence we now have a total of 21-6=15 and a label 'poi'. <br>
+The results showed that max precision/accuracy/recall were obtained at k=9, where features are: <br>
+__label__: 'poi' <br>
+__features__: 'salary', 'total_payments', 'total_assets', 'bonus', 'fraction_of_messages_to_pois', 'total_stock_value', 'shared_receipt_with_poi', 'exercised_stock_options', 'restricted_stock' <br>
 
-Now, to stress the importance of feature selection, I had tuned the required parameters and done the validation, the scores without the top 10 features was as below:
+```diff
++ Note: Our engineered features 'fraction_of_messages' and 'total_assets' have shown up in the top features. :)
+```
+
+Now, to stress the importance of feature selection, I had tuned the required parameters and done the validation, the scores without the top 9 features was as below:
 ```
 Accuracy: 0.846043956044
 Precision: 0.325
 Recall: 0.4
 ```
-The score had further improved a lot.Please check the **Validation** section to find the final scores. The scores have been improved drastically as the model had only the top 10 features to work on.
+The score had further improved a lot.Please check the **Validation** section to find the final scores. The scores have been improved significantly as the model had only the top 9 features to work on.
 
 ### Feature scaling
 This part is essential when there is a huge margin of difference when comparing 2 features i.e. if one feature completely dominates the other due to its large value, then the features need to be scaled to bring them under the same roof. <br>
@@ -93,8 +100,8 @@ This parameter keeps the output of the classifier constant. In case we do not me
 
 **The benchmarks: (when the newly engineered features are used)**
 ```
-Accuracy: 0.847472527473
-Precision: 0.436666666667
+Accuracy: 0.875567765568
+Precision: 0.45
 Recall: 0.45
 ```
 
