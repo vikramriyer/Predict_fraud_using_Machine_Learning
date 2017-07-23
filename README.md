@@ -172,10 +172,10 @@ fn = false negative <br>
 |    | svm        |0.875091575092|0.0            |  0.0   |
 |    | dt         |0.813736263736|0.258333333333 |  0.35   |
 
-**
-By looking at the above table it can be said that, the precision and recall scores for Decision Tree classifier are better than Support Vector Machine and k-nearest neighbors** <br>
-**Another point that can be noticed is the performace is good from k=4 to k=13 and falls down exponentially later almost like a gaussian distribution.
-**
+
+**By looking at the above table it can be said that, the precision and recall scores for Decision Tree classifier are better than Support Vector Machine and k-nearest neighbors** <br>
+
+**Another point that can be noticed is the performace is good from k=4 to k=13 and falls down exponentially later almost like a gaussian distribution**
 
 ## Abbreviations
 dt - decision trees <br>
