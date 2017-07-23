@@ -34,11 +34,11 @@ Since this dataset is an example of supervised learning, we know the label 'poi'
 1. fraction_of_messages_from_poi
 2. fraction_of_messages_to_poi
 
-3. total_assets
+3. total_assets <br>
 This feature was more of intuitive and interesting one. It is important to know who made the most money considering all the financial features present in the dataset. Added up 'salary', 'total_stock_value', 'exercised_stock_options' and 'bonus'
 
 ### Feature selection
-**How did I select the value k=9**
+**How did I select the value k=9** <br>
 I had the precision, recall and accuracy tested for all values ranging between 1 to 16 (final number of features). We had a total of 21 features out of which we removed 6 features in the outlier section. Hence we now have a total of 21-6=15 and a label 'poi'. <br>
 The results showed that max precision/accuracy/recall were obtained at k=9, where features are: <br>
 __label__: 'poi' <br>
