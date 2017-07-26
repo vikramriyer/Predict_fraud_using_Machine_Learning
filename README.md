@@ -192,3 +192,4 @@ http://machinelearningmastery.com/tune-number-size-decision-trees-xgboost-python
 https://discussions.udacity.com/t/selectkbest-best-value-for-k/235319/1 <br>
 https://docs.google.com/document/d/12-vI18qm2R79xpjmwloy-lKe5GdHV_KQVpaweieOnXY/edit# <br>
 https://www.quora.com/What-is-the-best-way-to-understand-the-terms-precision-and-recall
+https://help.github.com/articles/about-readmes/
