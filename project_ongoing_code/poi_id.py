@@ -6,10 +6,35 @@ import math
 import pandas as pd
 import numpy as np
 import operator
-sys.path.append("../tools/")
 
+sys.path.append("../tools/")
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
+
+import matplotlib.pyplot as plt
+from numpy import mean
+
+from sklearn.feature_selection import SelectKBest
+from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import StratifiedKFold
+from sklearn.cross_validation import StratifiedShuffleSplit
+from sklearn.cross_validation import KFold, cross_val_score
+from sklearn import preprocessing
+from sklearn.decomposition import PCA, NMF
+
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import chi2
+
+from sklearn.grid_search import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+
+import warnings
+warnings.filterwarnings("ignore")
 
 ### Task 1: Select what features you'll use.
 '''
