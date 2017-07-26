@@ -89,6 +89,8 @@ Hence, we we need to be pretty careful in validating if our algorithms are corre
 In simple terms, let's consider an example of a bike. <br>
 For ex: If I want to ride my bike on a steep slove, I would want my bike to have good speed as well as acceleration, I would not care much about it's fuel efficiency. However on the contrary, if I want to go on a long ride, speed would not matter as much as fuel efficiency would. For these to happen, we tune some parts of the bike like the ignition system, rpm, etc. In the same way, when we want our machine learning algorithms to perform well under certain conditions, we tune some parameters which allow us to get better results. <br>
 
+**Note:**  It is also possible that we overtune an algorithm which may take the model to run for ever thus increasing the time complexity. At the end of the day, our aim to find out how much accuracy we desire depending on the problem we are solving. 
+
 **Tuning of the parameters**
 After tuning the parameters, the recall and precision crossed the 30% threshold mark. This can be done better and will do it in the next iterations as I dig more into tuning of the algorithm and evaluation.
 
@@ -120,6 +122,65 @@ recall = tp / (tp + fn) <br>
 where tp = true positive <br>
 fp = false positive <br>
 fn = false negative <br>
+
+## Benchmarks for values of k (1..15) and classifiers(svm, knn, dt)
+|  k | Classifier |   Accuracy   |   Precision   | Recall |
+|----|------------|--------------|---------------|--------|
+|  1 | knn        |0.854120879121|0.1            |  0.05  |      
+|    | svm        |0.862454212454|0.0            |  0.0   |
+|    | dt         |0.810256410256|0.291666666667 |  0.3   |
+|  2 | knn        |0.854761904762|0.0333333333333|  0.05  |      
+|    | svm        |0.862454212454|0.0            |  0.0   |
+|    | dt         |0.787179487179|0.258333333333 |  0.3   |
+|  3 | knn        |0.862454212454|0.05           |  0.05  |      
+|    | svm        |0.862454212454|0.0            |  0.0   |
+|    | dt         |0.78663003663 |0.17           |  0.25  |
+|  4 | knn        |0.854761904762|0.05           |  0.05  |      
+|    | svm        |0.862454212454|0.0            |  0.0   |
+|    | dt         |0.838095238095|0.416666666667 |  0.4   |
+|  5 | knn        |0.854761904762|0.05           |  0.05  |      
+|    | svm        |0.862454212454|0.0            |  0.0   |
+|    | dt         |0.82326007326 |0.35           |  0.4   |
+|  6 | knn        |0.855860805861|0.05           |  0.05  |      
+|    | svm        |0.863553113553|0.0            |  0.0   |
+|    | dt         |0.816666666667|0.423333333333 |  0.45  |
+|  7 | knn        |0.85695970696|0.05            |  0.05  |      
+|    | svm        |0.864652014652|0.0            |  0.0   |
+|    | dt         |0.797619047619|0.183333333333 |  0.25  |
+|  8 | knn        |0.866996336996|0.0            |  0.0   |      
+|    | svm        |0.874139194139|0.0            |  0.0   |
+|    | dt         |0.825494505495|0.233333333333 |  0.3   |
+|  **9** | **knn**        |**0.867948717949**|**0.0**            |  **0.0**   |
+|    | **svm**        |**0.875091575092**|**0.0**            |  **0.0**   |
+|    | **dt**         |**0.875567765568**|**0.45**           | **0.45**   |
+|  10 | knn       |0.867948717949 |0.0           |  0.0   |      
+|    | svm        |0.875091575092 |0.0           |  0.0   |
+|    | dt         |0.847472527473 |0.436666666667|  0.45  |
+|  11 | knn       |0.867948717949 |0.0           |  0.0   |      
+|    | svm        |0.875091575092 |0.0           |  0.0   |
+|    | dt         |0.847472527473 |0.386666666667|  0.4   |
+|  12 | knn       |0.867948717949 |0.0           |  0.0   |      
+|    | svm        |0.875091575092 |0.0           |  0.0   |
+|    | dt         |0.819853479853 |0.275         |  0.4   |
+|  13 | knn       |0.867948717949|0.0            |  0.0   |      
+|    | svm        |0.875091575092|0.0            |  0.0   |
+|    | dt         |0.806043956044|0.265 |  0.4   |
+|  14 | knn       |0.867948717949|0.0            |  0.0   |      
+|    | svm        |0.875091575092|0.0            |  0.0   |
+|    | dt         |0.834212454212|0.283333333333 |  0.4   |
+|  15 | knn       |0.867948717949|0.0            |  0.0   |      
+|    | svm        |0.875091575092|0.0            |  0.0   |
+|    | dt         |0.813736263736|0.258333333333 |  0.35   |
+
+
+**By looking at the above table it can be said that, the precision and recall scores for Decision Tree classifier are better than Support Vector Machine and k-nearest neighbors** <br>
+
+**Another point that can be noticed is the performace is good from k=4 to k=13 and falls down exponentially later almost like a gaussian distribution**
+
+## Abbreviations
+dt - decision trees <br>
+svm - support vector machines <br>
+knn - k nearest neighbors <br>
 
 ## References
 https://docs.google.com/document/d/12-vI18qm2R79xpjmwloy-lKe5GdHV_KQVpaweieOnXY/edit?usp=sharing <br>
